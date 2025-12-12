@@ -1365,7 +1365,7 @@
             opacity: 0.9;
         }
 
-        /* BOOKING MODAL STYLES - DENGAN CATATAN OPSIONAL */
+        /* BOOKING MODAL STYLES - DENGAN JAM DAN CATATAN OPSIONAL */
         .booking-modal {
             position: fixed;
             top: 0;
@@ -1391,7 +1391,7 @@
             background-color: var(--white);
             border-radius: 20px;
             width: 90%;
-            max-width: 450px;
+            max-width: 500px;
             padding: 40px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             transform: translateY(30px);
@@ -1438,6 +1438,35 @@
 
         .form-actions .btn {
             flex: 1;
+        }
+
+        /* Time select styling */
+        .time-select-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .time-option {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .time-option:hover {
+            border-color: var(--gold);
+            background-color: rgba(212, 175, 55, 0.1);
+        }
+
+        .time-option.selected {
+            border-color: var(--navy);
+            background-color: var(--navy);
+            color: white;
         }
 
         /* ADMIN PANEL STYLES */
@@ -1731,7 +1760,7 @@
             border-color: var(--gold);
         }
 
-        .order-details-btn {
+        .order-details-btn, .booking-details-btn {
             background-color: var(--navy);
             color: white;
             border: none;
@@ -1740,14 +1769,15 @@
             cursor: pointer;
             font-size: 0.8rem;
             font-weight: 600;
+            margin-top: 5px;
         }
 
-        .order-details-btn:hover {
+        .order-details-btn:hover, .booking-details-btn:hover {
             background-color: var(--gold);
             color: var(--navy);
         }
 
-        .order-details-modal {
+        .order-details-modal, .booking-details-modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -1763,12 +1793,12 @@
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
-        .order-details-modal.active {
+        .order-details-modal.active, .booking-details-modal.active {
             opacity: 1;
             visibility: visible;
         }
 
-        .order-details-content {
+        .order-details-content, .booking-details-content {
             background-color: var(--white);
             border-radius: 20px;
             width: 90%;
@@ -1779,23 +1809,24 @@
             transition: transform 0.4s ease;
         }
 
-        .order-details-modal.active .order-details-content {
+        .order-details-modal.active .order-details-content,
+        .booking-details-modal.active .booking-details-content {
             transform: translateY(0);
         }
 
-        .order-details-header {
+        .order-details-header, .booking-details-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
         }
 
-        .order-details-header h3 {
+        .order-details-header h3, .booking-details-header h3 {
             font-size: 1.8rem;
             color: var(--navy);
         }
 
-        .close-order-details {
+        .close-order-details, .close-booking-details {
             background: none;
             border: none;
             font-size: 1.5rem;
@@ -1803,33 +1834,33 @@
             cursor: pointer;
         }
 
-        .order-info-item {
+        .order-info-item, .booking-info-item {
             margin-bottom: 15px;
             padding-bottom: 15px;
             border-bottom: 1px solid #eee;
         }
 
-        .order-info-item:last-child {
+        .order-info-item:last-child, .booking-info-item:last-child {
             border-bottom: none;
         }
 
-        .order-info-label {
+        .order-info-label, .booking-info-label {
             font-weight: 600;
             color: var(--navy);
             margin-bottom: 5px;
         }
 
-        .order-info-value {
+        .order-info-value, .booking-info-value {
             color: var(--gray);
         }
 
-        .order-items-list {
+        .order-items-list, .booking-items-list {
             margin-top: 20px;
             max-height: 200px;
             overflow-y: auto;
         }
 
-        .order-item-detail {
+        .order-item-detail, .booking-item-detail {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
@@ -1951,6 +1982,10 @@
             .form-actions {
                 flex-direction: column;
             }
+            
+            .time-select-group {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 576px) {
@@ -1991,6 +2026,10 @@
             }
             
             .admin-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .time-select-group {
                 grid-template-columns: 1fr;
             }
         }
@@ -2042,6 +2081,21 @@
             </div>
             <div id="order-details-content">
                 <!-- Order details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Details Modal -->
+    <div class="booking-details-modal" id="booking-details-modal">
+        <div class="booking-details-content">
+            <div class="booking-details-header">
+                <h3>Detail Reservasi</h3>
+                <button class="close-booking-details" id="close-booking-details">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="booking-details-content">
+                <!-- Booking details will be loaded here -->
             </div>
         </div>
     </div>
@@ -2099,9 +2153,9 @@
                         <!-- Low stock items will be loaded here -->
                     </div>
                     
-                    <h3 class="section-title-admin">Pesanan Take Away Terbaru</h3>
-                    <div id="recent-takeaway-orders">
-                        <!-- Recent takeaway orders will be loaded here -->
+                    <h3 class="section-title-admin">Reservasi Hari Ini</h3>
+                    <div id="today-bookings">
+                        <!-- Today's bookings will be loaded here -->
                     </div>
                 </div>
                 
@@ -2176,7 +2230,7 @@
                                 <th>Nama</th>
                                 <th>No WhatsApp</th>
                                 <th>Jumlah Orang</th>
-                                <th>Tanggal Booking</th>
+                                <th>Tanggal & Jam</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -2219,7 +2273,7 @@
         </div>
     </nav>
 
-    <!-- Booking Modal - DENGAN CATATAN OPSIONAL -->
+    <!-- Booking Modal - DENGAN JAM DAN CATATAN OPSIONAL -->
     <div class="booking-modal" id="booking-modal">
         <div class="booking-content">
             <div class="booking-header">
@@ -2256,6 +2310,15 @@
                 <div class="form-group">
                     <label for="booking-date">Tanggal Reservasi *</label>
                     <input type="date" id="booking-date" name="booking-date" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="booking-time">Jam Reservasi *</label>
+                    <p class="optional-note">Pilih waktu yang tersedia</p>
+                    <div class="time-select-group" id="time-select-group">
+                        <!-- Time options will be generated dynamically -->
+                    </div>
+                    <input type="hidden" id="booking-time" name="booking-time" required>
                 </div>
                 
                 <!-- CATATAN OPSIONAL -->
@@ -3250,6 +3313,17 @@
         const pickupTimeElement = document.getElementById('pickup-time');
         const orderDetailsModal = document.getElementById('order-details-modal');
         const closeOrderDetailsBtn = document.getElementById('close-order-details');
+        const bookingDetailsModal = document.getElementById('booking-details-modal');
+        const closeBookingDetailsBtn = document.getElementById('close-booking-details');
+        const timeSelectGroup = document.getElementById('time-select-group');
+        const bookingTimeInput = document.getElementById('booking-time');
+
+        // Available time slots
+        const timeSlots = [
+            '08:00', '09:00', '10:00', '11:00', '12:00', 
+            '13:00', '14:00', '15:00', '16:00', '17:00',
+            '18:00', '19:00', '20:00', '21:00', '22:00'
+        ];
 
         // ==============================
         // 2. UTILITY FUNCTIONS
@@ -3274,6 +3348,39 @@
         function loadFromLocalStorage(key) {
             const data = localStorage.getItem(key);
             return data ? JSON.parse(data) : null;
+        }
+
+        // Generate time options for booking
+        function generateTimeOptions() {
+            if (!timeSelectGroup) return;
+            
+            timeSelectGroup.innerHTML = '';
+            
+            timeSlots.forEach(time => {
+                const timeOption = document.createElement('div');
+                timeOption.className = 'time-option';
+                timeOption.textContent = time;
+                timeOption.setAttribute('data-time', time);
+                
+                timeOption.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    document.querySelectorAll('.time-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    bookingTimeInput.value = this.getAttribute('data-time');
+                });
+                
+                timeSelectGroup.appendChild(timeOption);
+            });
+            
+            // Set default selection to first available time
+            if (timeSelectGroup.firstChild) {
+                timeSelectGroup.firstChild.classList.add('selected');
+                bookingTimeInput.value = timeSelectGroup.firstChild.getAttribute('data-time');
+            }
         }
 
         // ==============================
@@ -3428,7 +3535,7 @@
         }
 
         // ==============================
-        // 4. BOOKING FUNCTIONS - DENGAN CATATAN OPSIONAL
+        // 4. BOOKING FUNCTIONS - DENGAN JAM DAN CATATAN OPSIONAL
         // ==============================
         function saveBookingToAdmin(bookingData) {
             const booking = {
@@ -3437,6 +3544,7 @@
                 phone: bookingData.phone,
                 guests: bookingData.guests,
                 date: bookingData.date,
+                time: bookingData.time,
                 notes: bookingData.notes || '',
                 bookingDate: new Date().toLocaleString('id-ID'),
                 status: 'pending'
@@ -3591,6 +3699,7 @@
                         phone: '081234567890',
                         guests: '4',
                         date: '2024-12-20',
+                        time: '18:00',
                         notes: 'Meja di dekat jendela jika memungkinkan',
                         bookingDate: '19/12/2024 10:30:00',
                         status: 'pending'
@@ -3601,6 +3710,7 @@
                         phone: '082345678901',
                         guests: '2',
                         date: '2024-12-21',
+                        time: '19:00',
                         notes: 'Perayaan ulang tahun',
                         bookingDate: '18/12/2024 14:15:00',
                         status: 'confirmed'
@@ -3683,7 +3793,7 @@
                             <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Selesai</option>
                             <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Dibatalkan</option>
                         </select>
-                        <button class="order-details-btn" data-id="${order.id}" data-type="dinein" style="margin-top: 5px;">Detail</button>
+                        <button class="order-details-btn" data-id="${order.id}" data-type="dinein">Detail</button>
                     </td>
                 `;
                 
@@ -3772,7 +3882,7 @@
                             <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Sudah Diambil</option>
                             <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Dibatalkan</option>
                         </select>
-                        <button class="order-details-btn" data-id="${order.id}" data-type="takeaway" style="margin-top: 5px;">Detail</button>
+                        <button class="order-details-btn" data-id="${order.id}" data-type="takeaway">Detail</button>
                     </td>
                 `;
                 
@@ -3937,7 +4047,7 @@
                     <td>${booking.name}</td>
                     <td>${booking.phone}</td>
                     <td>${booking.guests} orang</td>
-                    <td>${booking.date} (Booking: ${booking.bookingDate})</td>
+                    <td>${booking.date} ${booking.time}</td>
                     <td><span class="status-badge ${statusClass}">${booking.status}</span></td>
                     <td>
                         <select class="status-select booking-status-select" data-id="${booking.id}">
@@ -3945,6 +4055,7 @@
                             <option value="confirmed" ${booking.status === 'confirmed' ? 'selected' : ''}>Dikonfirmasi</option>
                             <option value="cancelled" ${booking.status === 'cancelled' ? 'selected' : ''}>Dibatalkan</option>
                         </select>
+                        <button class="booking-details-btn" data-id="${booking.id}">Detail</button>
                     </td>
                 `;
                 
@@ -3975,6 +4086,64 @@
                     }
                 });
             });
+            
+            document.querySelectorAll('.booking-details-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const bookingId = this.getAttribute('data-id');
+                    showBookingDetails(bookingId);
+                });
+            });
+        }
+
+        function showBookingDetails(bookingId) {
+            const booking = bookingsData.find(b => b.id === bookingId);
+            
+            if (!booking) return;
+            
+            const detailsContent = document.getElementById('booking-details-content');
+            const detailsHtml = `
+                <div class="booking-info-item">
+                    <div class="booking-info-label">ID Reservasi</div>
+                    <div class="booking-info-value">${booking.id}</div>
+                </div>
+                <div class="booking-info-item">
+                    <div class="booking-info-label">Nama Pelanggan</div>
+                    <div class="booking-info-value">${booking.name}</div>
+                </div>
+                <div class="booking-info-item">
+                    <div class="booking-info-label">No WhatsApp</div>
+                    <div class="booking-info-value">${booking.phone}</div>
+                </div>
+                <div class="booking-info-item">
+                    <div class="booking-info-label">Jumlah Orang</div>
+                    <div class="booking-info-value">${booking.guests} orang</div>
+                </div>
+                <div class="booking-info-item">
+                    <div class="booking-info-label">Tanggal Reservasi</div>
+                    <div class="booking-info-value">${booking.date}</div>
+                </div>
+                <div class="booking-info-item">
+                    <div class="booking-info-label">Jam Reservasi</div>
+                    <div class="booking-info-value">${booking.time}</div>
+                </div>
+                <div class="booking-info-item">
+                    <div class="booking-info-label">Tanggal Pemesanan</div>
+                    <div class="booking-info-value">${booking.bookingDate}</div>
+                </div>
+                ${booking.notes ? `
+                <div class="booking-info-item">
+                    <div class="booking-info-label">Catatan</div>
+                    <div class="booking-info-value">${booking.notes}</div>
+                </div>
+                ` : ''}
+                <div class="booking-info-item">
+                    <div class="booking-info-label">Status</div>
+                    <div class="booking-info-value"><span class="status-badge ${booking.status === 'pending' ? 'status-pending' : booking.status === 'confirmed' ? 'status-confirmed' : 'status-cancelled'}">${booking.status}</span></div>
+                </div>
+            `;
+            
+            detailsContent.innerHTML = detailsHtml;
+            bookingDetailsModal.classList.add('active');
         }
 
         function updateAdminDashboard() {
@@ -4017,13 +4186,14 @@
                 lowStockContainer.innerHTML = '<p style="color: var(--gray); text-align: center;">Tidak ada stok rendah</p>';
             }
             
-            // Recent takeaway orders
-            const recentTakeaway = takeawayOrders.filter(order => order.status === 'pending' || order.status === 'processing').slice(0, 5);
-            const recentTakeawayContainer = document.getElementById('recent-takeaway-orders');
-            recentTakeawayContainer.innerHTML = '';
+            // Today's bookings
+            const today = new Date().toISOString().split('T')[0];
+            const todayBookings = bookingsData.filter(booking => booking.date === today && booking.status !== 'cancelled');
+            const todayBookingsContainer = document.getElementById('today-bookings');
+            todayBookingsContainer.innerHTML = '';
             
-            if (recentTakeaway.length > 0) {
-                recentTakeaway.forEach(order => {
+            if (todayBookings.length > 0) {
+                todayBookings.forEach(booking => {
                     const div = document.createElement('div');
                     div.className = 'stat-card';
                     div.style.textAlign = 'left';
@@ -4032,15 +4202,15 @@
                     
                     div.innerHTML = `
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                            <strong>${order.customer.name}</strong>
-                            <span class="status-badge ${order.status === 'pending' ? 'status-pending' : 'status-processing'}">${order.status}</span>
+                            <strong>${booking.name}</strong>
+                            <span class="status-badge ${booking.status === 'pending' ? 'status-pending' : 'status-confirmed'}">${booking.status}</span>
                         </div>
-                        <small>${order.customer.phone} • ${formatPrice(order.total)} • ${order.date.split(' ')[0]}</small>
+                        <small>${booking.guests} orang • ${booking.time} • ${booking.phone}</small>
                     `;
-                    recentTakeawayContainer.appendChild(div);
+                    todayBookingsContainer.appendChild(div);
                 });
             } else {
-                recentTakeawayContainer.innerHTML = '<p style="color: var(--gray); text-align: center;">Tidak ada pesanan take away pending</p>';
+                todayBookingsContainer.innerHTML = '<p style="color: var(--gray); text-align: center;">Tidak ada reservasi hari ini</p>';
             }
         }
 
@@ -4140,7 +4310,11 @@
             orderDetailsModal.classList.remove('active');
         });
 
-        // BOOKING FORM SUBMIT (DENGAN CATATAN OPSIONAL)
+        closeBookingDetailsBtn.addEventListener('click', () => {
+            bookingDetailsModal.classList.remove('active');
+        });
+
+        // BOOKING FORM SUBMIT (DENGAN JAM DAN CATATAN OPSIONAL)
         bookingForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
@@ -4149,10 +4323,11 @@
                 phone: document.getElementById('booking-phone').value,
                 guests: document.getElementById('booking-guests').value,
                 date: document.getElementById('booking-date').value,
+                time: document.getElementById('booking-time').value,
                 notes: document.getElementById('booking-notes').value
             };
             
-            if (!bookingData.name || !bookingData.phone || !bookingData.guests || !bookingData.date) {
+            if (!bookingData.name || !bookingData.phone || !bookingData.guests || !bookingData.date || !bookingData.time) {
                 showNotification('Harap isi semua field yang wajib diisi');
                 return;
             }
@@ -4161,6 +4336,7 @@
             
             bookingModal.classList.remove('active');
             bookingForm.reset();
+            generateTimeOptions(); // Reset time options
             
             showNotification(`Reservasi ${booking.id} berhasil dibuat!`);
         });
@@ -4356,6 +4532,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             initCart();
             initAdminData();
+            generateTimeOptions();
             
             // Set min date for booking to today
             const today = new Date().toISOString().split('T')[0];
